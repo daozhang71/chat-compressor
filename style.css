@@ -1,0 +1,88 @@
+#chat_compressor_settings .inline-drawer-content {
+    padding: 10px;
+}
+
+#chat_compressor_settings .chat_compressor_status_block {
+    background-color: var(--SmartThemeBlurTintColor);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#chat_compressor_settings #chat_compressor_status {
+    font-size: 0.9em;
+    color: var(--SmartThemeBodyColor);
+}
+
+#chat_compressor_settings .marginTop10 {
+    margin-top: 10px;
+}
+
+#chat_compressor_settings .marginTop5 {
+    margin-top: 5px;
+}
+
+#chat_compressor_settings .marginBot5 {
+    margin-bottom: 5px;
+}
+
+#chat_compressor_settings hr {
+    margin: 15px 0;
+    border-color: var(--SmartThemeBorderColor);
+}
+
+#chat_compressor_settings label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#chat_compressor_settings small {
+    color: var(--SmartThemeQuoteColor);
+    font-size: 0.85em;
+    margin-top: 3px;
+}
+
+#chat_compressor_settings textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+#chat_compressor_settings input[type="number"].text_pole {
+    width: 100%;
+    padding: 5px 10px;
+}
+
+#chat_compressor_settings #chat_compressor_current_summary {
+    background-color: var(--SmartThemeBlurTintColor);
+}
+
+#chat_compressor_settings #chat_compressor_current_summary:not([readonly]) {
+    background-color: var(--SmartThemeBodyColor);
+    color: var(--SmartThemeBlurTintColor);
+}
+
+#chat_compressor_settings .menu_button {
+    flex: 1;
+    margin: 2px;
+}
+
+#chat_compressor_settings .checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+#chat_compressor_settings .checkbox_label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+#chat_compressor_settings select.text_pole {
+    width: 100%;
+    padding: 5px;
+}
+
+#chat_compressor_settings input[type="range"] {
+    width: 100%;
+}

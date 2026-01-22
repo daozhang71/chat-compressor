@@ -1,0 +1,215 @@
+<div id="chat_compressor_settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>Chat Compressor</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <!-- Status Display -->
+            <div class="chat_compressor_status_block">
+                <div class="flex-container flexFlowColumn">
+                    <label>当前状态:</label>
+                    <span id="chat_compressor_status">暂无压缩数据</span>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Google AI API Key -->
+            <div class="flex-container flexFlowColumn">
+                <label for="chat_compressor_google_api_key">
+                    <b>Google AI API Key</b> (用于向量化)
+                </label>
+                <div class="flex-container">
+                    <input id="chat_compressor_google_api_key" type="password" class="text_pole" placeholder="输入你的 Google AI API Key...">
+                    <input id="chat_compressor_test_api_key" class="menu_button" type="button" value="测试" title="测试 API Key 是否有效">
+                </div>
+                <small>去 <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> 免费申请</small>
+            </div>
+
+            <hr>
+
+            <!-- Main Action Buttons -->
+            <div class="flex-container marginBot5">
+                <input id="chat_compressor_compress_btn" class="menu_button" type="button" value="压缩聊天记录" title="生成摘要并向量化旧消息">
+                <input id="chat_compressor_clear_btn" class="menu_button" type="button" value="清除数据" title="清除当前聊天的所有压缩数据">
+            </div>
+
+            <hr>
+
+            <!-- Settings -->
+            <div class="chat_compressor_settings_block">
+                <div class="flex-container flexFlowColumn">
+                    <label for="chat_compressor_keep_recent">
+                        保留最近消息数:
+                    </label>
+                    <input id="chat_compressor_keep_recent" type="number" class="text_pole" min="1" max="100" value="10">
+                    <small>这些消息不会被压缩，保持完整发送给模型</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_summary_words">
+                        摘要最大字数:
+                    </label>
+                    <input id="chat_compressor_summary_words" type="number" class="text_pole" min="50" max="5000" value="300">
+                    <small>AI生成摘要的最大字数限制</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_max_total_summary">
+                        总摘要最大长度:
+                    </label>
+                    <input id="chat_compressor_max_total_summary" type="number" class="text_pole" min="500" max="50000" value="2000">
+                    <small>超过此长度时，会自动压缩总摘要（增量压缩时生效）</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label class="checkbox_label" for="chat_compressor_skip_vectorize">
+                        <input id="chat_compressor_skip_vectorize" type="checkbox" checked>
+                        <span>跳过向量化 (仅生成摘要)</span>
+                    </label>
+                    <small>取消勾选后，会同时向量化消息用于检索。需要先设置 Google AI API Key</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_retrieve_count">
+                        检索数量:
+                    </label>
+                    <input id="chat_compressor_retrieve_count" type="number" class="text_pole" min="1" max="50" value="5">
+                    <small>每次生成时检索多少条相关历史消息</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_threshold">
+                        相似度阈值: <span id="chat_compressor_threshold_value">0.3</span>
+                    </label>
+                    <input id="chat_compressor_threshold" type="range" min="0" max="1" step="0.05" value="0.3">
+                    <small>只返回相似度高于此值的结果，越低结果越多</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_position">注入位置:</label>
+                    <select id="chat_compressor_position" class="text_pole">
+                        <option value="0">聊天中 @ 深度</option>
+                        <option value="1">系统提示词之后</option>
+                    </select>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_depth">
+                        注入深度:
+                    </label>
+                    <input id="chat_compressor_depth" type="number" class="text_pole" min="0" max="100" value="2">
+                    <small>0 = 最底部（最新），数字越大越靠前（越旧）</small>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Templates -->
+            <div class="chat_compressor_template_block">
+                <div class="flex-container flexFlowColumn">
+                    <label for="chat_compressor_summary_prompt">摘要生成提示词:</label>
+                    <textarea id="chat_compressor_summary_prompt" class="text_pole" rows="6" placeholder="用于生成摘要的提示词...">用最精简的方式总结以下对话，要求：
+1.用分号分隔不同事件，不要换行
+2.省略所有不必要的标点、空格、连接词
+3.只保留关键信息：人物行为、重要事件、关系变化、地点转换
+4.用简短词组而非完整句子
+5.限制在{{words}}字以内
+格式示例：角色A做了X;B回应Y;发生Z事件;地点转到W</textarea>
+                    <small>使用 {{words}} 表示字数限制</small>
+                </div>
+
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label for="chat_compressor_injection_template">注入模板:</label>
+                    <textarea id="chat_compressor_injection_template" class="text_pole" rows="5" placeholder="注入到prompt的模板...">[前情提要]
+{{summary}}
+
+[相关历史片段]
+{{retrieved}}</textarea>
+                    <small>{{summary}} = 摘要，{{retrieved}} = 向量检索到的相关历史</small>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- View Summary -->
+            <div class="flex-container flexFlowColumn">
+                <label>当前摘要内容:</label>
+                <textarea id="chat_compressor_current_summary" class="text_pole" rows="5" readonly placeholder="暂无摘要..."></textarea>
+                <div class="flex-container marginTop5">
+                    <input id="chat_compressor_edit_summary_btn" class="menu_button" type="button" value="编辑摘要" title="手动编辑摘要内容">
+                    <input id="chat_compressor_save_summary_btn" class="menu_button" type="button" value="保存" title="保存编辑" style="display:none;">
+                    <input id="chat_compressor_cancel_edit_btn" class="menu_button" type="button" value="取消" title="取消编辑" style="display:none;">
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Enable/Disable -->
+            <div class="flex-container flexFlowColumn">
+                <label class="checkbox_label" for="chat_compressor_enabled">
+                    <input id="chat_compressor_enabled" type="checkbox" checked>
+                    <span>生成时自动注入压缩数据</span>
+                </label>
+            </div>
+
+            <div class="flex-container flexFlowColumn marginTop10">
+                <label class="checkbox_label" for="chat_compressor_hide_compressed">
+                    <input id="chat_compressor_hide_compressed" type="checkbox">
+                    <span>隐藏已压缩的消息 (不发送给模型)</span>
+                </label>
+                <small>启用后，已压缩的旧消息将不会发送给模型，只发送：预设 + 摘要/检索 + 最近消息。可大幅节省 token。</small>
+            </div>
+
+            <hr>
+
+            <!-- Debug: Show Retrieved Results -->
+            <div class="flex-container flexFlowColumn">
+                <label class="checkbox_label" for="chat_compressor_show_retrieved">
+                    <input id="chat_compressor_show_retrieved" type="checkbox">
+                    <span>显示检索结果（调试用）</span>
+                </label>
+                <small>开启后可以看到每次发消息时检索到的相关历史</small>
+            </div>
+
+            <div id="chat_compressor_retrieved_block" style="display: none;">
+                <div class="flex-container flexFlowColumn marginTop10">
+                    <label>上次检索结果:</label>
+                    <div id="chat_compressor_retrieved_info" style="font-size: 0.85em; color: var(--SmartThemeQuoteColor); margin-bottom: 5px;">
+                        暂无检索
+                    </div>
+                    <textarea id="chat_compressor_retrieved_content" class="text_pole" rows="6" readonly placeholder="检索到的内容会显示在这里..." style="font-size: 0.85em;"></textarea>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Help -->
+            <div class="flex-container flexFlowColumn">
+                <details>
+                    <summary style="cursor: pointer; color: var(--SmartThemeQuoteColor);">使用说明</summary>
+                    <div style="padding: 10px; font-size: 0.9em;">
+                        <p><b>功能1：摘要压缩</b></p>
+                        <ol>
+                            <li>保持"跳过向量化"勾选</li>
+                            <li>点击"压缩聊天记录"</li>
+                            <li>插件会用当前模型生成历史摘要</li>
+                        </ol>
+
+                        <p style="margin-top: 10px;"><b>功能2：摘要 + 向量检索</b></p>
+                        <ol>
+                            <li>输入 Google AI API Key 并测试</li>
+                            <li>取消勾选"跳过向量化"</li>
+                            <li>点击"压缩聊天记录"</li>
+                            <li>每次发消息时，会自动检索相关历史</li>
+                        </ol>
+
+                        <p style="margin-top: 10px;"><b>工作流程：</b></p>
+                        <p>用户发消息 → 用消息查询向量库 → 找到相关历史 → 和摘要一起注入给模型</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
